@@ -37,9 +37,7 @@ RUN npx playwright install-deps && npx playwright install
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" \
     && git config --global url."https://github.com/".insteadOf "git@github.com:"
 
-# Install n8n Puppeteer node (uses HTTPS for any git pulls)
-RUN cd /usr/local/lib/node_modules/n8n \
-    && npm install n8n-nodes-puppeteer && rm -rf /root/.npm
+
 
 WORKDIR /data
 
