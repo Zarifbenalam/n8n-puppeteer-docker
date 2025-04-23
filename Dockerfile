@@ -26,8 +26,8 @@ ENV NODE_ICU_DATA=/usr/local/lib/node_modules/full-icu
 # Install Puppeteer, Playwright, and Selenium WebDriver
 RUN npm install -g puppeteer playwright selenium-webdriver
 
-# Install Playwright browsers
-RUN npx playwright install --with-deps
+# Install Playwright OS dependencies and browsers
+RUN npx playwright install-deps && npx playwright install
 
 # Download ChromeDriver for Selenium
 RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
