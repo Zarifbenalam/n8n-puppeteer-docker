@@ -1,6 +1,6 @@
 # Use Node 18 on Debian 11 (Bullseye) slim for Playwright support
-#FROM node:18-bullseye-slim
-FROM node:20-alpine
+FROM node:18-bullseye-slim
+#FROM node:20-alpine
 # Allow overriding n8n version, default to latest
 ARG N8N_VERSION="latest"
 
