@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # build tools and Python for n8n
     python3 build-essential pkg-config libcairo2-dev libglib2.0-dev \
     # n8n runtime dependencies
-    git curl tzdata tini \
+    git curl tzdata tini openssh-client \
     # GUI dependencies for headless browsers
     xvfb chromium \
     # Fonts for rendering
@@ -33,8 +33,13 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # Install Playwright dependencies and browsers
 RUN npx playwright install-deps && npx playwright install
 
-# Install n8n Puppeteer node
-RUN cd /usr/local/lib/node_modules/n8n && npm install n8n-nodes-puppeteer && rm -rf /root/.npm
+# Ensure git uses HTTPS instead of SSH for GitHub dependencies
+RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" \
+    && git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+# Install n8n Puppeteer node (uses HTTPS for any git pulls)
+RUN cd /usr/local/lib/node_modules/n8n \
+    && npm install n8n-nodes-puppeteer && rm -rf /root/.npm
 
 WORKDIR /data
 
