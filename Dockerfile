@@ -1,6 +1,6 @@
 # Use Node 18 on Debian 11 (Bullseye) slim for Playwright support
-FROM node:18-bullseye-slim
-
+#FROM node:18-bullseye-slim
+FROM node:20-alpine
 # Allow overriding n8n version, default to latest
 ARG N8N_VERSION="latest"
 
@@ -42,11 +42,21 @@ RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.co
 
 
 WORKDIR /data
-
+# Install necessary packages
+RUN apk add --no-cache bash su-exec tini
 # Copy and set permissions for the entrypoint script
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+#COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+#RUN chmod +x /docker-entrypoint.sh
+# Copy application files
+COPY . .
+
+# Ensure the entrypoint script has execute permissions
 RUN chmod +x /docker-entrypoint.sh
+
 # Set the entrypoint
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+# Set the entrypoint
+#ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 5678/tcp
