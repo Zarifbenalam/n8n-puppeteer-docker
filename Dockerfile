@@ -1,8 +1,8 @@
 # Use Debian-based Node image for broader compatibility
 FROM node:16-slim
 
-ARG N8N_VERSION
-RUN if [ -z "$N8N_VERSION" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi
+# Provide a default version if not passed explicitly
+ARG N8N_VERSION="latest"
 
 USER root
 
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     openjdk-11-jre-headless unzip \
  && rm -rf /var/lib/apt/lists/*
 
-# Install n8n
+# Install n8n at specified version
 RUN npm install -g full-icu n8n@${N8N_VERSION}
 ENV NODE_ICU_DATA=/usr/local/lib/node_modules/full-icu
 
@@ -30,7 +30,7 @@ RUN npm install -g puppeteer playwright selenium-webdriver
 RUN npx playwright install --with-deps
 
 # Download ChromeDriver for Selenium
-RUN CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
     wget -q "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip" -O /tmp/chromedriver.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin && \
     chmod +x /usr/local/bin/chromedriver && \
