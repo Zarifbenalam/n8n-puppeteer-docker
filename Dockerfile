@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN npm install -g full-icu n8n@${N8N_VERSION} && rm -rf /root/.npm
 ENV NODE_ICU_DATA=/usr/lib/node_modules/full-icu
 
+
+
 # Install automation libraries globally
 RUN npm install -g puppeteer playwright selenium-webdriver chromedriver && rm -rf /root/.npm
 
@@ -41,7 +43,10 @@ RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.co
 
 WORKDIR /data
 
+# Copy and set permissions for the entrypoint script
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
+RUN chmod +x /docker-entrypoint.sh
+# Set the entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 5678/tcp
